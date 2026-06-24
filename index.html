@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Generate QR codes instantly for URLs, WiFi, contacts, emails, and more. Free, fast, no sign-up." />
+  <meta name="theme-color" content="#6c47ff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="QR Studio" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <title>QR Studio — Instant QR Code Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="QR Studio Home">
+        <svg class="logo-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="14" height="14" rx="2" fill="currentColor"/>
+          <rect x="5" y="5" width="8" height="8" rx="1" fill="var(--bg)"/>
+          <rect x="7" y="7" width="4" height="4" rx="0.5" fill="currentColor"/>
+          <rect x="20" y="2" width="14" height="14" rx="2" fill="currentColor"/>
+          <rect x="23" y="5" width="8" height="8" rx="1" fill="var(--bg)"/>
+          <rect x="25" y="7" width="4" height="4" rx="0.5" fill="currentColor"/>
+          <rect x="2" y="20" width="14" height="14" rx="2" fill="currentColor"/>
+          <rect x="5" y="23" width="8" height="8" rx="1" fill="var(--bg)"/>
+          <rect x="7" y="25" width="4" height="4" rx="0.5" fill="currentColor"/>
+          <rect x="20" y="20" width="4" height="4" fill="currentColor"/>
+          <rect x="26" y="20" width="4" height="4" fill="currentColor"/>
+          <rect x="20" y="26" width="4" height="4" fill="currentColor"/>
+          <rect x="26" y="26" width="8" height="8" rx="1" fill="currentColor"/>
+        </svg>
+        <span>QR<strong>Studio</strong></span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <button class="nav-btn active" data-view="generator" aria-pressed="true">Generator</button>
+        <button class="nav-btn" data-view="history" aria-pressed="false">
+          History
+          <span class="history-badge" id="historyBadge" aria-label="history items" style="display:none">0</span>
+        </button>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main" role="main">
+
+    <!-- ===== GENERATOR VIEW ===== -->
+    <section id="generatorView" class="view active" aria-label="QR Code Generator">
+      <div class="generator-layout">
+
+        <!-- Left Panel: Controls -->
+        <div class="panel panel-controls">
+          <div class="panel-header">
+            <h1 class="panel-title">Create QR Code</h1>
+            <p class="panel-subtitle">Fill in the details below to generate your code.</p>
+          </div>
+
+          <!-- QR Type Tabs -->
+          <div class="tabs" role="tablist" aria-label="QR code type">
+            <button class="tab active" role="tab" aria-selected="true" data-tab="url">URL</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="wifi">WiFi</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="contact">Contact</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="email">Email</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="phone">Phone</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="sms">SMS</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="text">Text</button>
+          </div>
+
+          <!-- Tab Panels -->
+          <div class="tab-content">
+
+            <!-- URL Tab -->
+            <div class="tab-panel active" data-panel="url" role="tabpanel" aria-label="Website URL input">
+              <div class="field-group">
+                <label class="field-label" for="urlInput">Website URL</label>
+                <div class="input-row">
+                  <input class="field-input" id="urlInput" type="url" placeholder="https://example.com" autocomplete="url" aria-describedby="urlError" />
+                  <button class="icon-btn" id="copyUrlBtn" title="Copy URL" aria-label="Copy URL to clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+                <span class="field-error" id="urlError" role="alert" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <!-- WiFi Tab -->
+            <div class="tab-panel" data-panel="wifi" role="tabpanel" aria-label="WiFi QR code input">
+              <div class="field-group">
+                <label class="field-label" for="wifiSsid">Network Name (SSID)</label>
+                <input class="field-input" id="wifiSsid" type="text" placeholder="My Home Network" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="wifiPassword">Password</label>
+                <input class="field-input" id="wifiPassword" type="password" placeholder="Leave blank if open network" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="wifiSecurity">Security Type</label>
+                <select class="field-select" id="wifiSecurity" aria-label="WiFi security type">
+                  <option value="WPA">WPA/WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">None (Open)</option>
+                </select>
+              </div>
+              <label class="checkbox-label">
+                <input type="checkbox" id="wifiHidden" />
+                <span>Hidden network</span>
+              </label>
+            </div>
+
+            <!-- Contact Tab -->
+            <div class="tab-panel" data-panel="contact" role="tabpanel" aria-label="Contact card QR code input">
+              <div class="field-row">
+                <div class="field-group">
+                  <label class="field-label" for="contactFirst">First Name</label>
+                  <input class="field-input" id="contactFirst" type="text" placeholder="Abhijeet" />
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="contactLast">Last Name</label>
+                  <input class="field-input" id="contactLast" type="text" placeholder="Sawant" />
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="contactOrg">Organization</label>
+                <input class="field-input" id="contactOrg" type="text" placeholder="Pillai" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="contactPhone">Phone</label>
+                <input class="field-input" id="contactPhone" type="tel" placeholder="+91 9152408141" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="contactEmail">Email</label>
+                <input class="field-input" id="contactEmail" type="email" placeholder="abhi@example.com" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="contactUrl">Website</label>
+                <input class="field-input" id="contactUrl" type="url" placeholder="https://abhipillai.com" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="contactAddress">Address</label>
+                <input class="field-input" id="contactAddress" type="text" placeholder="panvel, Maharashtra" />
+              </div>
+            </div>
+
+            <!-- Email Tab -->
+            <div class="tab-panel" data-panel="email" role="tabpanel" aria-label="Email QR code input">
+              <div class="field-group">
+                <label class="field-label" for="emailTo">To</label>
+                <input class="field-input" id="emailTo" type="email" placeholder="recipient@example.com" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="emailSubject">Subject</label>
+                <input class="field-input" id="emailSubject" type="text" placeholder="Hello there" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="emailBody">Message</label>
+                <textarea class="field-textarea" id="emailBody" placeholder="Type your message..." rows="3"></textarea>
+              </div>
+            </div>
+
+            <!-- Phone Tab -->
+            <div class="tab-panel" data-panel="phone" role="tabpanel" aria-label="Phone QR code input">
+              <div class="field-group">
+                <label class="field-label" for="phoneNumber">Phone Number</label>
+                <input class="field-input" id="phoneNumber" type="tel" placeholder="+91 9152408141" />
+              </div>
+            </div>
+
+            <!-- SMS Tab -->
+            <div class="tab-panel" data-panel="sms" role="tabpanel" aria-label="SMS QR code input">
+              <div class="field-group">
+                <label class="field-label" for="smsNumber">Phone Number</label>
+                <input class="field-input" id="smsNumber" type="tel" placeholder="+91 9152408141" />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="smsMessage">Message</label>
+                <textarea class="field-textarea" id="smsMessage" placeholder="Type your SMS..." rows="3"></textarea>
+              </div>
+            </div>
+
+            <!-- Text Tab -->
+            <div class="tab-panel" data-panel="text" role="tabpanel" aria-label="Plain text QR code input">
+              <div class="field-group">
+                <label class="field-label" for="plainText">Text</label>
+                <textarea class="field-textarea" id="plainText" placeholder="Enter any text..." rows="4"></textarea>
+              </div>
+            </div>
+
+          </div><!-- /tab-content -->
+
+          <!-- Filename -->
+          <div class="field-group mt-4">
+            <label class="field-label" for="filenameInput">
+              Filename
+              <span class="field-hint">(optional — auto-detected from URL)</span>
+            </label>
+            <input class="field-input" id="filenameInput" type="text" placeholder="e.g. myqr" />
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-row">
+            <button class="btn btn-primary" id="generateBtn" aria-label="Generate QR code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Generate
+            </button>
+            <button class="btn btn-ghost" id="clearBtn" aria-label="Clear form">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              Clear
+            </button>
+          </div>
+
+        </div><!-- /panel-controls -->
+
+        <!-- Right Panel: Preview + Customisation -->
+        <div class="panel panel-preview">
+
+          <!-- QR Preview -->
+          <div class="preview-area" id="previewArea" aria-label="QR code preview" aria-live="polite">
+            <div class="preview-placeholder" id="previewPlaceholder" aria-hidden="true">
+              <svg viewBox="0 0 80 80" fill="none" class="placeholder-icon" aria-hidden="true">
+                <rect x="4" y="4" width="30" height="30" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                <rect x="11" y="11" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="2" fill="none"/>
+                <rect x="14" y="14" width="10" height="10" rx="1" fill="currentColor" opacity="0.3"/>
+                <rect x="46" y="4" width="30" height="30" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                <rect x="53" y="11" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="2" fill="none"/>
+                <rect x="56" y="14" width="10" height="10" rx="1" fill="currentColor" opacity="0.3"/>
+                <rect x="4" y="46" width="30" height="30" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                <rect x="11" y="53" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="2" fill="none"/>
+                <rect x="14" y="56" width="10" height="10" rx="1" fill="currentColor" opacity="0.3"/>
+                <rect x="46" y="46" width="8" height="8" fill="currentColor" opacity="0.3"/>
+                <rect x="58" y="46" width="8" height="8" fill="currentColor" opacity="0.3"/>
+                <rect x="46" y="58" width="8" height="8" fill="currentColor" opacity="0.3"/>
+                <rect x="58" y="58" width="18" height="18" rx="2" fill="currentColor" opacity="0.3"/>
+              </svg>
+              <p>Your QR code will appear here</p>
+              <p class="placeholder-hint">Fill in the details and press Generate</p>
+            </div>
+            <div class="preview-loading" id="previewLoading" aria-hidden="true" style="display:none">
+              <div class="spinner" aria-label="Generating QR code..."></div>
+              <p>Generating…</p>
+            </div>
+            <div class="preview-canvas-wrap" id="previewCanvas" style="display:none">
+              <canvas id="qrCanvas" aria-label="Generated QR code"></canvas>
+            </div>
+          </div>
+
+          <!-- Download Buttons -->
+          <div class="download-row" id="downloadRow" style="display:none" aria-label="Download options">
+            <button class="btn btn-download" id="downloadPng" aria-label="Download QR as PNG">PNG</button>
+            <button class="btn btn-download" id="downloadJpg" aria-label="Download QR as JPG">JPG</button>
+            <button class="btn btn-download" id="downloadSvg" aria-label="Download QR as SVG">SVG</button>
+          </div>
+
+          <!-- Customisation Accordion -->
+          <div class="customise-section">
+            <button class="section-toggle" id="customiseToggle" aria-expanded="false" aria-controls="customisePanel">
+              <span>Customise</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="section-body" id="customisePanel" aria-hidden="true">
+
+              <!-- Colors -->
+              <div class="customize-grid">
+                <div class="field-group">
+                  <label class="field-label" for="fgColor">Foreground</label>
+                  <div class="color-row">
+                    <input class="color-input" id="fgColor" type="color" value="#1a0533" aria-label="QR foreground color" />
+                    <span class="color-value" id="fgColorVal">#1a0533</span>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="bgColor">Background</label>
+                  <div class="color-row">
+                    <input class="color-input" id="bgColor" type="color" value="#ffffff" aria-label="QR background color" />
+                    <span class="color-value" id="bgColorVal">#ffffff</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Size, Margin, EC -->
+              <div class="customize-grid three-col">
+                <div class="field-group">
+                  <label class="field-label" for="qrSize">Size</label>
+                  <select class="field-select" id="qrSize" aria-label="QR code size">
+                    <option value="200">Small</option>
+                    <option value="300" selected>Medium</option>
+                    <option value="450">Large</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="qrMargin">Margin</label>
+                  <select class="field-select" id="qrMargin" aria-label="QR code margin">
+                    <option value="0">None</option>
+                    <option value="2">Small</option>
+                    <option value="4" selected>Medium</option>
+                    <option value="8">Large</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="qrEc">Error Correction</label>
+                  <select class="field-select" id="qrEc" aria-label="Error correction level">
+                    <option value="L">L — Low</option>
+                    <option value="M" selected>M — Med</option>
+                    <option value="Q">Q — High</option>
+                    <option value="H">H — Max</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Logo Upload -->
+              <div class="field-group">
+                <label class="field-label">Logo (optional)</label>
+                <div class="logo-upload-area" id="logoDropZone" role="button" tabindex="0" aria-label="Upload logo image" aria-describedby="logoHint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                  <span>Click or drag image here</span>
+                  <input type="file" id="logoFile" accept="image/*" style="display:none" aria-label="Select logo file" />
+                </div>
+                <p class="field-hint" id="logoHint">PNG or SVG recommended. Keep under 30% of QR area for readability.</p>
+                <div class="logo-controls" id="logoControls" style="display:none">
+                  <label class="field-label" for="logoSize">Logo size: <span id="logoSizeVal">25</span>%</label>
+                  <input type="range" class="slider" id="logoSize" min="10" max="40" value="25" aria-label="Logo size percentage" />
+                  <button class="btn btn-ghost btn-sm" id="removeLogo" aria-label="Remove logo">Remove logo</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /panel-preview -->
+      </div><!-- /generator-layout -->
+    </section>
+
+    <!-- ===== HISTORY VIEW ===== -->
+    <section id="historyView" class="view" aria-label="QR Code History" style="display:none">
+      <div class="history-header">
+        <div>
+          <h2 class="panel-title">History</h2>
+          <p class="panel-subtitle">Last 20 generated QR codes, saved in your browser.</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="clearHistoryBtn" aria-label="Clear all history">Clear All</button>
+      </div>
+      <div class="history-grid" id="historyGrid" role="list" aria-label="QR code history">
+        <!-- Populated by JS -->
+      </div>
+      <div class="history-empty" id="historyEmpty" style="display:none" aria-live="polite">
+        <svg viewBox="0 0 80 80" fill="none" class="placeholder-icon" aria-hidden="true">
+          <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+          <path d="M28 40h24M40 28v24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+        <p>No history yet</p>
+        <p class="placeholder-hint">Generate a QR code and it will appear here.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Install Banner -->
+  <div class="install-banner" id="installBanner" style="display:none" role="complementary" aria-label="App install prompt">
+    <div class="install-inner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+      <div>
+        <strong>Install QR Studio</strong>
+        <p>Add to home screen for offline access.</p>
+      </div>
+    </div>
+    <div class="install-actions">
+      <button class="btn btn-primary btn-sm" id="installBtn" aria-label="Install app">Install</button>
+      <button class="btn btn-ghost btn-sm" id="dismissBanner" aria-label="Dismiss install prompt">Later</button>
+    </div>
+  </div>
+
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- qr-creator (canvas-based, supports color) -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/dist/qr-creator.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
